@@ -14,12 +14,17 @@ const dict = {
     },
     about: {
       kicker: 'Men haqimda',
-      text: "Men Allamurod — Samarqand davlat universitetining Dasturiy injiniring yo'nalishi bitiruvchi kurs talabasi. Kameralarni ko'radigan, tilni tushunadigan va real vaqtda qaror qabul qiladigan tizimlar quraman: ishchilar xavfsizligidan tortib suv sifatigacha.",
+      text: "Men Allamurod — AI Engineer va Backend dasturchiman, Samarqand davlat universitetining Dasturiy injiniring yo'nalishi bitiruvchi kurs talabasiman. Computer Vision, LLM va backend texnologiyalari asosida real mijozlar uchun juda ko'plab loyihalarni amalga oshirganman. 2025-yilda Malayziya va Xitoyda bo'lib, xalqaro tajriba orttirdim.",
       stats: [
+        { n: 100, s: '+', l: 'Amalga oshirilgan loyiha' },
         { n: 130, s: '+', l: 'GitHub repozitoriya' },
         { n: 3, s: '', l: 'Hakaton loyihalari' },
-        { n: 15, s: '', l: 'Tanlangan loyiha' },
-        { n: 2023, s: '', l: 'Yildan beri kod yozaman' },
+        { n: 2, s: '', l: 'Xorijiy davlat tajribasi' },
+      ],
+      abroadTitle: 'Xalqaro tajriba',
+      abroad: [
+        { code: 'MY', c: 'Malayziya', y: '2025' },
+        { code: 'CN', c: 'Xitoy', y: '2025' },
       ],
       bullets: [
         "YOLO asosidagi computer vision ilovalarida tajriba",
@@ -55,6 +60,7 @@ const dict = {
         { y: '2023', t: 'Backend asoslari', d: "Python, Django, DRF va Flask bilan birinchi veb ilovalar va Telegram botlar." },
         { y: '2024', t: 'Computer Vision', d: "OpenCV, YOLO, yuz tanish, avtomobil va rentgen tasvirlarini klassifikatsiya qilish." },
         { y: '2025', t: 'AI Hackathon Samarqand', d: "SafeVision va bolalar xavfsizligi roboti — YOLO + ESP32 + Telegram." },
+        { y: '2025', t: 'Malayziya va Xitoy', d: "Xorijga safarlar: xalqaro tajriba, yangi texnologiyalar va hamkorlik aloqalari." },
         { y: '2026', t: 'AI mahsulotlar', d: "WaterAI, AgroDoktor, OptiCare, MMFI Hackatom 2026 va SaaS platformalar." },
       ],
     },
@@ -81,12 +87,17 @@ const dict = {
     },
     about: {
       kicker: 'About me',
-      text: "I'm Allamurod — a final-year Software Engineering student at Samarkand State University. I build systems that see through cameras, understand language and make decisions in real time: from worker safety to water quality.",
+      text: "I'm Allamurod — an AI Engineer and Backend Developer, and a final-year Software Engineering student at Samarkand State University. I have delivered a large number of real-world projects for clients using computer vision, LLMs and backend technologies. In 2025 I travelled to Malaysia and China and gained international experience.",
       stats: [
+        { n: 100, s: '+', l: 'Projects delivered' },
         { n: 130, s: '+', l: 'GitHub repositories' },
         { n: 3, s: '', l: 'Hackathon builds' },
-        { n: 15, s: '', l: 'Selected projects' },
-        { n: 2023, s: '', l: 'Shipping code since' },
+        { n: 2, s: '', l: 'Countries abroad' },
+      ],
+      abroadTitle: 'International experience',
+      abroad: [
+        { code: 'MY', c: 'Malaysia', y: '2025' },
+        { code: 'CN', c: 'China', y: '2025' },
       ],
       bullets: [
         'Experienced in YOLO-based computer vision applications',
@@ -122,6 +133,7 @@ const dict = {
         { y: '2023', t: 'Backend foundations', d: 'First web apps and Telegram bots with Python, Django, DRF and Flask.' },
         { y: '2024', t: 'Computer Vision', d: 'OpenCV, YOLO, face recognition, car and X-ray image classification.' },
         { y: '2025', t: 'AI Hackathon Samarkand', d: 'SafeVision and a child-safety robot — YOLO + ESP32 + Telegram.' },
+        { y: '2025', t: 'Malaysia & China', d: 'Trips abroad: international experience, new technologies and partnerships.' },
         { y: '2026', t: 'AI products', d: 'WaterAI, AgroDoktor, OptiCare, MMFI Hackatom 2026 and SaaS platforms.' },
       ],
     },

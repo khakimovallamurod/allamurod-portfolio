@@ -48,6 +48,7 @@ export default function About() {
       </p>
 
       <div className="about-grid">
+        <div className="about-left">
         <ul className="about-bullets">
           {t.about.bullets.map((b, i) => (
             <FadeUp as="li" key={b} delay={i * 0.08}>
@@ -55,6 +56,19 @@ export default function About() {
             </FadeUp>
           ))}
         </ul>
+        <FadeUp className="abroad">
+          <span className="abroad-title mono">✈ {t.about.abroadTitle}</span>
+          <div className="abroad-list">
+            {t.about.abroad.map((a) => (
+              <div className="abroad-item" key={a.code}>
+                <span className="abroad-code">{a.code}</span>
+                <span className="abroad-c">{a.c}</span>
+                <span className="mono">{a.y}</span>
+              </div>
+            ))}
+          </div>
+        </FadeUp>
+        </div>
         <div className="stats">
           {t.about.stats.map((s, i) => (
             <FadeUp className="stat" key={s.l} delay={i * 0.08}>

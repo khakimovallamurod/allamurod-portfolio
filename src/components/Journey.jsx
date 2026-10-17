@@ -17,7 +17,7 @@ export default function Journey() {
       <div className="timeline" ref={ref}>
         <div className="tl-track"><motion.div className="tl-fill" style={{ scaleY }} /></div>
         {t.journey.items.map((it, i) => (
-          <FadeUp className="tl-item" key={it.y} delay={0.05}>
+          <FadeUp className="tl-item" key={it.y + it.t} delay={0.05}>
             <span className="tl-node" />
             <span className="tl-year">{it.y}</span>
             <div className="tl-body">

@@ -1709,3 +1709,68 @@ html.has-cursor .cursor-ring {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Face-detection tag rendered over the 3D portrait */
+.det-tag-wrap {
+  pointer-events: none;
+}
+.det-tag {
+  transform: translateY(-100%);
+  margin-top: -4px;
+  padding: 3px 7px;
+  background: #ff4d1c;
+  color: #0c0c0d;
+  font: 600 10px/1.2 var(--font-mono);
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+/* International experience */
+.about-left {
+  display: flex;
+  flex-direction: column;
+  gap: 34px;
+}
+.abroad-title {
+  display: block;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 14px;
+}
+.abroad-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.abroad-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  transition: border-color 0.4s, transform 0.5s var(--ease-out);
+}
+.abroad-item:hover {
+  border-color: var(--accent);
+  transform: translateY(-4px);
+}
+.abroad-code {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--on-accent);
+  font: 700 14px var(--font-display);
+}
+.abroad-c {
+  flex: 1;
+  font: 600 18px var(--font-display);
+  letter-spacing: -0.02em;
+}
+.abroad-item .mono {
+  color: var(--muted);
+}
