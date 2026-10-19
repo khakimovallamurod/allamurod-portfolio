@@ -237,6 +237,23 @@ function Chat({ p }) {
 const arts = { vision: Vision, robot: Robot, water: Water, plate: Plate, leaf: Leaf, eye: Eye, chart: Chart, web: Web, map: MapArt, chat: Chat }
 
 export default function ProjectArt({ project }) {
+  if (project.image) {
+    return (
+      <div className="art-img-wrap">
+        <img
+          src={project.image}
+          alt={project.title}
+          className="art-img"
+          loading="lazy"
+        />
+        <div className="art-overlay" />
+        {project.category === 'vision' && <div className="art-scan" />}
+        <div className="art-badge-tag mono">
+          <span className="art-rec-dot" /> {project.category.toUpperCase()} · AI
+        </div>
+      </div>
+    )
+  }
   const A = arts[project.art] || Web
   return <A p={project} />
 }

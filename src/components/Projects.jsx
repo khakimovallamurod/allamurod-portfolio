@@ -198,7 +198,14 @@ function Index() {
               >
                 <button className="row-btn" onClick={() => setOpen(p)} data-cursor={t.work.open}>
                   <span className="row-num mono">{pad(n)}</span>
-                  <span className="row-title">{p.title}</span>
+                  <div className="row-main">
+                    {p.image && (
+                      <span className="row-thumb">
+                        <img src={p.image} alt="" loading="lazy" />
+                      </span>
+                    )}
+                    <span className="row-title">{p.title}</span>
+                  </div>
                   <span className="row-desc">{p.desc[lang].split(/[.:]/)[0]}</span>
                   <span className="row-cat">{t.work.cats[p.category]}</span>
                   <span className="row-year mono">{p.year}</span>
