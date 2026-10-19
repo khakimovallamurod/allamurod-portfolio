@@ -17,7 +17,7 @@ export const projects = [
     year: '2026',
     category: 'vision',
     art: 'vision',
-    image: '/projects/safevision.jpg',
+    image: 'projects/safevision.jpg',
     featured: true,
     stack: ['YOLO', 'React', 'TypeScript', 'Tailwind'],
     labels: ['person 0.96', 'helmet 0.93', 'no-vest 0.88'],
@@ -33,7 +33,7 @@ export const projects = [
     year: '2025',
     category: 'vision',
     art: 'robot',
-    image: '/projects/langtoy.jpg',
+    image: 'projects/langtoy.jpg',
     featured: true,
     stack: ['YOLO11', 'ESP32', 'WebSocket', 'gTTS'],
     labels: ['kid 0.94', 'knife 0.81', 'distance 0.4m'],
@@ -49,7 +49,7 @@ export const projects = [
     year: '2026',
     category: 'ai',
     art: 'water',
-    image: '/projects/waterai.jpg',
+    image: 'projects/waterai.jpg',
     featured: true,
     stack: ['Neural Net', 'JWT', 'Python', 'CSV/PDF'],
     desc: {
@@ -64,7 +64,7 @@ export const projects = [
     year: '2025',
     category: 'vision',
     art: 'vision',
-    image: '/projects/worker.jpg',
+    image: 'projects/worker.jpg',
     stack: ['YOLOv8', 'OpenCV', 'Tracking', 'Telegram'],
     labels: ['person #12', 'helmet 0.90', 'smoke 0.77'],
     desc: {
@@ -79,7 +79,7 @@ export const projects = [
     year: '2026',
     category: 'vision',
     art: 'vision',
-    image: '/projects/safechild.jpg',
+    image: 'projects/safechild.jpg',
     stack: ['Django', 'ONNX Runtime', 'YOLO', 'OpenCV'],
     labels: ['scissors 0.91', 'socket 0.86', 'pills 0.79'],
     desc: {
@@ -94,7 +94,7 @@ export const projects = [
     year: '2025',
     category: 'vision',
     art: 'plate',
-    image: '/projects/plates.jpg',
+    image: 'projects/plates.jpg',
     stack: ['YOLO', 'OCR', 'OpenCV', 'Python'],
     labels: ['01 A 777 AA'],
     desc: {
@@ -109,7 +109,7 @@ export const projects = [
     year: '2026',
     category: 'ai',
     art: 'leaf',
-    image: '/projects/agrodoktor.png',
+    image: 'projects/agrodoktor.png',
     stack: ['Django', 'Vision AI', 'Analytics', 'PWA'],
     desc: {
       uz: "Fermerlar uchun o'simlik kasalliklarini rasm orqali aniqlovchi AI xizmat: 3 darajali xulosa, davolash tavsiyalari, dala bo'yicha tarix va statistika.",
@@ -123,7 +123,7 @@ export const projects = [
     year: '2026',
     category: 'ai',
     art: 'eye',
-    image: '/projects/opticare.png',
+    image: 'projects/opticare.png',
     stack: ['Python', 'Vision AI', 'EXIF-safe', 'Dashboard'],
     desc: {
       uz: "Bolalar ko'z salomatligini smartfon surati orqali tahlil qiluvchi xizmat: qizarish, quruqlik, shish belgilarini 3 toifaga ajratadi, GPS ma'lumotlarini tozalaydi.",
@@ -137,7 +137,7 @@ export const projects = [
     year: '2026',
     category: 'data',
     art: 'chart',
-    image: '/projects/bluecurrent.png',
+    image: 'projects/bluecurrent.png',
     stack: ['React', 'Vite', 'Flask', 'KNN'],
     desc: {
       uz: "MMFI Hackatom 2026: suvni tuzsizlantirish tizimi uchun AI dashboard — toza suv hajmini bashorat qiladi, MAE/R² metrikalar, feature importance va insight sahifalari.",
@@ -151,7 +151,7 @@ export const projects = [
     year: '2026',
     category: 'data',
     art: 'chart',
-    image: '/projects/salesmind.png',
+    image: 'projects/salesmind.png',
     stack: ['React', 'TypeScript', 'Gemini', 'Recharts'],
     desc: {
       uz: "Savdo va bozor analitikasi dashboardi: talab prognozi, trendlar, narx va raqobatchi tahlili, mijozlar insightlari — barchasi AI asosida bir joyda.",
@@ -165,7 +165,7 @@ export const projects = [
     year: '2026',
     category: 'web',
     art: 'web',
-    image: '/projects/restaurant.png',
+    image: 'projects/restaurant.png',
     stack: ['Laravel 13', 'PHP 8.3', 'Tailwind', 'MySQL'],
     desc: {
       uz: "Restoran va to'yxonalar uchun multi-tenant SaaS: tenant panel, superadmin markazi, obuna billing, Telegram orqali to'lov tasdiqlash va audit log.",
@@ -179,7 +179,7 @@ export const projects = [
     year: '2025',
     category: 'web',
     art: 'map',
-    image: '/projects/uztour.png',
+    image: 'projects/uztour.png',
     stack: ['HTML5', 'CSS3', 'JavaScript', 'SEO'],
     desc: {
       uz: "O'zbekiston turizm platformasi: 14 viloyat sahifasi, mehmonxona va restoranlar, tur paketlar, virtual turlar va taksi xizmatlari — to'liq responsiv.",
@@ -193,7 +193,7 @@ export const projects = [
     year: '2026',
     category: 'web',
     art: 'web',
-    image: '/projects/ilmiy.png',
+    image: 'projects/ilmiy.png',
     stack: ['Laravel', 'Blade', 'MySQL', 'Auth'],
     desc: {
       uz: "Ta'lim jarayonini boshqarish platformasi: o'quvchilar, o'qituvchilar va ma'murlar uchun testlar, sinflar va baholashlarni boshqarish.",
@@ -207,7 +207,7 @@ export const projects = [
     year: '2026',
     category: 'bots',
     art: 'chat',
-    image: '/projects/turkish.png',
+    image: 'projects/turkish.png',
     stack: ['python-telegram-bot', 'Gemini', 'JSON', 'Audio'],
     chat: ['Kanımca → menimcha', 'Test: 8/10 ✓', 'AI: "özellikle"?'],
     desc: {
@@ -222,7 +222,7 @@ export const projects = [
     year: '2026',
     category: 'bots',
     art: 'chat',
-    image: '/projects/medichelp.png',
+    image: 'projects/medichelp.png',
     stack: ['Telegram', 'Gemini', 'Speech-to-Text', 'JSON'],
     chat: ['🎙 voice 0:42', 'Transcribing…', 'Route: 5 sections ✓'],
     desc: {

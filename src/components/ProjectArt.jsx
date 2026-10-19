@@ -1,3 +1,5 @@
+import { useState } from 'react'
+
 // Procedural, animated SVG covers for each project — solid colors only, themed via CSS variables.
 
 function Frame({ children, tag }) {
@@ -234,17 +236,31 @@ function Chat({ p }) {
   )
 }
 
+export function resolveImg(src) {
+  if (!src) return ''
+  if (src.startsWith('http://') || src.startsWith('https://')) return src
+  const base = import.meta.env.BASE_URL || './'
+  const cleanBase = base.endsWith('/') ? base : `${base}/`
+  const cleanSrc = src.replace(/^\.?\/+/, '')
+  return `${cleanBase}${cleanSrc}`
+}
+
 const arts = { vision: Vision, robot: Robot, water: Water, plate: Plate, leaf: Leaf, eye: Eye, chart: Chart, web: Web, map: MapArt, chat: Chat }
 
 export default function ProjectArt({ project }) {
-  if (project.image) {
+  const [imgError, setImgError] = useState(false)
+  const A = arts[project.art] || Web
+
+  if (project.image && !imgError) {
+    const src = resolveImg(project.image)
     return (
       <div className="art-img-wrap">
         <img
-          src={project.image}
+          src={src}
           alt={project.title}
           className="art-img"
           loading="lazy"
+          onError={() => setImgError(true)}
         />
         <div className="art-overlay" />
         {project.category === 'vision' && <div className="art-scan" />}
@@ -254,6 +270,6 @@ export default function ProjectArt({ project }) {
       </div>
     )
   }
-  const A = arts[project.art] || Web
+
   return <A p={project} />
 }

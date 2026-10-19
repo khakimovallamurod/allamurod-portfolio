@@ -3,7 +3,7 @@ import { AnimatePresence, motion, useMotionValue, useScroll, useSpring, useTrans
 import { useLang } from '../i18n.jsx'
 import { categories, projects } from '../data/projects.js'
 import { lenis } from '../hooks/useLenis.js'
-import ProjectArt from './ProjectArt.jsx'
+import ProjectArt, { resolveImg } from './ProjectArt.jsx'
 import Magnetic from './Magnetic.jsx'
 import { FadeUp, SplitReveal, ease, easeOut } from './Reveal.jsx'
 
@@ -201,7 +201,7 @@ function Index() {
                   <div className="row-main">
                     {p.image && (
                       <span className="row-thumb">
-                        <img src={p.image} alt="" loading="lazy" />
+                        <img src={resolveImg(p.image)} alt="" loading="lazy" />
                       </span>
                     )}
                     <span className="row-title">{p.title}</span>
