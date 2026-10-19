@@ -17,7 +17,7 @@ const damp = THREE.MathUtils.damp
 
 const palette = {
   dark: { env: '#0a0a0a', accent: '#ff4d1c', sparkle: '#ffffff' },
-  light: { env: '#8f8b83', accent: '#ff4d1c', sparkle: '#111111' },
+  light: { env: '#9a9aa0', accent: '#ff4d1c', sparkle: '#111111' },
 }
 
 function Portrait({ size }) {
