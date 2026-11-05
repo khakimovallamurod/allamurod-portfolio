@@ -3,11 +3,10 @@ import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import {
   Environment,
   Float,
-  Image,
   Lightformer,
   MeshTransmissionMaterial,
-  RoundedBox,
   Sparkles,
+  useTexture,
 } from '@react-three/drei'
 import * as THREE from 'three'
 
@@ -122,13 +121,22 @@ function ParticleRing({ radius, count, color, calm }) {
 }
 
 function Portrait({ size }) {
+  // Round portrait: matches the spherical network around it instead of a boxy card.
+  const map = useTexture(`${BASE}img/allamurod.jpg`, (t) => {
+    t.colorSpace = THREE.SRGBColorSpace
+    t.anisotropy = 8
+  })
   return (
     <group>
-      {/* Thin metal slab behind the photo gives the card physical depth */}
-      <RoundedBox args={[size * 1.04, size * 1.04, 0.07]} radius={0.05} smoothness={6} position={[0, 0, -0.045]}>
+      {/* Thin metal rim behind the photo gives it physical depth */}
+      <mesh position={[0, 0, -0.045]} rotation={[Math.PI / 2, 0, 0]}>
+        <cylinderGeometry args={[size * 0.515, size * 0.515, 0.07, 96]} />
         <meshStandardMaterial color="#1b1b1e" metalness={0.9} roughness={0.28} />
-      </RoundedBox>
-      <Image url={`${BASE}img/allamurod.jpg`} scale={[size, size]} radius={0.045} toneMapped={false} />
+      </mesh>
+      <mesh>
+        <circleGeometry args={[size * 0.5, 96]} />
+        <meshBasicMaterial map={map} toneMapped={false} />
+      </mesh>
     </group>
   )
 }
