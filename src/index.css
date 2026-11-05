@@ -1832,21 +1832,6 @@ html.has-cursor .cursor-ring {
   }
 }
 
-/* Face-detection tag rendered over the 3D portrait */
-.det-tag-wrap {
-  pointer-events: none;
-}
-.det-tag {
-  transform: translateY(-100%);
-  margin-top: -4px;
-  padding: 3px 7px;
-  background: #ff4d1c;
-  color: #0c0c0d;
-  font: 600 10px/1.2 var(--font-mono);
-  letter-spacing: 0.04em;
-  white-space: nowrap;
-}
-
 /* International experience */
 .about-left {
   display: flex;
@@ -1895,4 +1880,170 @@ html.has-cursor .cursor-ring {
 }
 .abroad-item .mono {
   color: var(--muted);
+}
+
+/* ───────────── Gallery (horizontal) ───────────── */
+.gallery {
+  margin-bottom: clamp(80px, 10vw, 140px);
+}
+.gallery-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.gallery-nav {
+  display: flex;
+  gap: 8px;
+}
+.gallery-nav button {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  color: var(--ink);
+  transition: border-color 0.3s, background-color 0.3s, color 0.3s;
+}
+.gallery-nav button:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--on-accent);
+}
+.gallery-track {
+  display: flex;
+  gap: 18px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  padding: 6px 0 10px;
+  overscroll-behavior-x: contain;
+}
+.gallery-track::-webkit-scrollbar {
+  display: none;
+}
+.g-card {
+  flex: 0 0 clamp(260px, 30vw, 420px);
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  text-align: left;
+  padding: 14px 14px 20px;
+  border-radius: 24px;
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  transition: border-color 0.4s, transform 0.6s var(--ease-out);
+}
+.g-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-6px);
+}
+.g-img {
+  display: block;
+  aspect-ratio: 4 / 3;
+  border-radius: 16px;
+  overflow: hidden;
+  background: var(--art-bg);
+}
+.g-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.9s var(--ease-out);
+}
+.g-card:hover .g-img img {
+  transform: scale(1.06);
+}
+.g-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--muted);
+}
+.g-title {
+  font: 600 clamp(22px, 2vw, 30px) / 1 var(--font-display);
+  letter-spacing: -0.04em;
+}
+.g-desc {
+  color: var(--ink-2);
+  font-size: 14px;
+}
+.g-dots {
+  display: flex;
+  gap: 6px;
+  margin-top: 18px;
+}
+.g-dots button {
+  width: 22px;
+  height: 3px;
+  border-radius: 3px;
+  background: var(--line);
+  transition: width 0.4s var(--ease-out), background-color 0.3s;
+}
+.g-dots button.is-active {
+  width: 48px;
+  background: var(--accent);
+}
+
+/* ───────────── Contact CTA ───────────── */
+.cta-block {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 34px;
+  text-align: center;
+  padding: clamp(50px, 8vw, 110px) clamp(18px, 4vw, 60px);
+  margin-bottom: clamp(60px, 8vw, 110px);
+  border-radius: clamp(22px, 3vw, 36px);
+  border: 1px solid var(--line);
+  background: var(--bg);
+}
+.cta-glow {
+  position: absolute;
+  inset: auto -20% -60% -20%;
+  height: 120%;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--accent) 35%, transparent), transparent);
+  pointer-events: none;
+}
+.cta-big {
+  position: relative;
+  font: 600 clamp(36px, 6.4vw, 104px) / 0.95 var(--font-display);
+  letter-spacing: -0.05em;
+  max-width: 14ch;
+  text-transform: uppercase;
+}
+.btn-shine {
+  position: relative;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 18px 34px;
+  border-radius: 100px;
+  font: 600 16px var(--font-display);
+  color: var(--on-accent);
+  background: linear-gradient(120deg, var(--accent), color-mix(in srgb, var(--accent) 55%, #ffd2a6));
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 50%, transparent), 0 18px 50px color-mix(in srgb, var(--accent) 40%, transparent);
+  transition: transform 0.5s var(--ease-out), box-shadow 0.5s;
+}
+.btn-shine::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(100deg, transparent 30%, rgba(255, 255, 255, 0.55) 50%, transparent 70%);
+  transform: translateX(-120%);
+  animation: shine 3.2s var(--ease) infinite;
+}
+.btn-shine:hover {
+  transform: translateY(-3px) scale(1.03);
+  box-shadow: 0 0 0 1px var(--accent), 0 24px 70px color-mix(in srgb, var(--accent) 60%, transparent);
+}
+@keyframes shine {
+  0%, 55% { transform: translateX(-120%); }
+  100% { transform: translateX(120%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .btn-shine::after { animation: none; }
 }

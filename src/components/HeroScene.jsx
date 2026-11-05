@@ -1,9 +1,8 @@
-import { Suspense, useEffect, useRef, useState } from 'react'
+import { Suspense, useEffect, useMemo, useRef, useState } from 'react'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import {
   Environment,
   Float,
-  Html,
   Image,
   Lightformer,
   MeshTransmissionMaterial,
@@ -16,8 +15,110 @@ const BASE = import.meta.env.BASE_URL
 const damp = THREE.MathUtils.damp
 
 const palette = {
-  dark: { env: '#0a0a0a', accent: '#ff4d1c', sparkle: '#ffffff' },
-  light: { env: '#9a9aa0', accent: '#ff4d1c', sparkle: '#111111' },
+  dark: { env: '#0a0a0a', accent: '#ff4d1c', sparkle: '#ffffff', line: '#edebe6' },
+  light: { env: '#9a9aa0', accent: '#f0420f', sparkle: '#111111', line: '#09090b' },
+}
+
+// Fewer particles on phones / weak CPUs, almost static with reduced motion.
+function getQuality() {
+  const w = window.innerWidth
+  const cores = navigator.hardwareConcurrency || 4
+  const calm = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false
+  const lite = w < 768 || cores <= 4
+  const mid = !lite && w < 1200
+  return {
+    lite,
+    calm,
+    nodes: lite ? 140 : mid ? 220 : 320,
+    ring: lite ? 500 : mid ? 900 : 1400,
+    sparkles: lite ? 20 : 50,
+    dpr: lite ? [1, 1.4] : [1, 1.75],
+  }
+}
+
+// Neural-network sphere: nodes on a Fibonacci sphere, nearest neighbours joined by lines.
+function NeuralSphere({ radius, count, color, line, calm }) {
+  const ref = useRef()
+  const { points, segments } = useMemo(() => {
+    const pts = []
+    const golden = Math.PI * (3 - Math.sqrt(5))
+    for (let i = 0; i < count; i++) {
+      const y = 1 - (i / (count - 1)) * 2
+      const r = Math.sqrt(1 - y * y)
+      const th = golden * i
+      // slight jitter so it reads as organic, not a perfect lattice
+      const k = radius * (0.92 + ((i * 7919) % 100) / 100 * 0.16)
+      pts.push(new THREE.Vector3(Math.cos(th) * r * k, y * k, Math.sin(th) * r * k))
+    }
+    const seg = []
+    const max = radius * 0.36
+    for (let i = 0; i < count; i++) {
+      let links = 0
+      for (let j = i + 1; j < count && links < 3; j++) {
+        if (pts[i].distanceTo(pts[j]) < max) {
+          seg.push(pts[i].x, pts[i].y, pts[i].z, pts[j].x, pts[j].y, pts[j].z)
+          links++
+        }
+      }
+    }
+    const flat = new Float32Array(count * 3)
+    pts.forEach((p, i) => p.toArray(flat, i * 3))
+    return { points: flat, segments: new Float32Array(seg) }
+  }, [count, radius])
+
+  useFrame((state, dt) => {
+    const g = ref.current
+    const p = Math.min(window.scrollY / window.innerHeight, 1.5)
+    g.rotation.y += dt * (calm ? 0.02 : 0.12 + p * 0.25)
+    g.rotation.z = Math.sin(state.clock.elapsedTime * 0.2) * (calm ? 0 : 0.1)
+    // Scroll pulls the network open around the portrait.
+    g.scale.setScalar(damp(g.scale.x, 1 + p * 0.35, 4, dt))
+  })
+
+  return (
+    <group ref={ref}>
+      <points>
+        <bufferGeometry>
+          <bufferAttribute attach="attributes-position" args={[points, 3]} />
+        </bufferGeometry>
+        <pointsMaterial color={color} size={0.035} sizeAttenuation transparent opacity={0.95} depthWrite={false} toneMapped={false} />
+      </points>
+      <lineSegments>
+        <bufferGeometry>
+          <bufferAttribute attach="attributes-position" args={[segments, 3]} />
+        </bufferGeometry>
+        <lineBasicMaterial color={line} transparent opacity={0.14} depthWrite={false} />
+      </lineSegments>
+    </group>
+  )
+}
+
+// Quai-style particle halo orbiting the sphere.
+function ParticleRing({ radius, count, color, calm }) {
+  const ref = useRef()
+  const positions = useMemo(() => {
+    const a = new Float32Array(count * 3)
+    for (let i = 0; i < count; i++) {
+      const th = (i / count) * Math.PI * 2 * 7.13
+      const spread = ((i * 2654435761) % 1000) / 1000 - 0.5
+      const r = radius * (1 + spread * 0.22)
+      a[i * 3] = Math.cos(th) * r
+      a[i * 3 + 1] = spread * radius * 0.06
+      a[i * 3 + 2] = Math.sin(th) * r
+    }
+    return a
+  }, [count, radius])
+  useFrame((_, dt) => {
+    if (!calm) ref.current.rotation.y -= dt * 0.08
+  })
+  return (
+    <points ref={ref} rotation={[Math.PI / 2.6, 0.25, 0]}>
+      <bufferGeometry>
+        <bufferAttribute attach="attributes-position" args={[positions, 3]} />
+      </bufferGeometry>
+      <pointsMaterial color={color} size={0.018} sizeAttenuation transparent opacity={0.7} depthWrite={false} toneMapped={false} />
+    </points>
+  )
 }
 
 function Portrait({ size }) {
@@ -29,19 +130,6 @@ function Portrait({ size }) {
       </RoundedBox>
       <Image url={`${BASE}img/allamurod.jpg`} scale={[size, size]} radius={0.045} toneMapped={false} />
     </group>
-  )
-}
-
-function Ring({ radius, speed, axis, tube = 0.008 }) {
-  const ref = useRef()
-  useFrame((_, dt) => {
-    ref.current.rotation[axis] += dt * speed
-  })
-  return (
-    <mesh ref={ref} rotation={[Math.PI / 2.4, 0.3, 0]}>
-      <torusGeometry args={[radius, tube, 24, 220]} />
-      <meshStandardMaterial color="#d9d9d9" metalness={1} roughness={0.12} />
-    </mesh>
   )
 }
 
@@ -76,105 +164,7 @@ function Glass({ position, scale }) {
   )
 }
 
-function CCTV({ position, rotation, scale, sweep = 0.35, phase = 0 }) {
-  const head = useRef()
-  const led = useRef()
-  useFrame((state) => {
-    const t = state.clock.elapsedTime + phase
-    // Pan left/right like a real PTZ camera.
-    head.current.rotation.y = Math.sin(t * 0.6) * sweep
-    head.current.rotation.x = Math.sin(t * 0.4) * 0.08
-    led.current.emissiveIntensity = Math.sin(t * 4) > 0 ? 3 : 0.2
-  })
-  return (
-    <group position={position} rotation={rotation} scale={scale}>
-      <group ref={head}>
-        {/* body */}
-        <RoundedBox args={[0.34, 0.3, 0.72]} radius={0.06} smoothness={5}>
-          <meshPhysicalMaterial color="#ececec" roughness={0.32} clearcoat={0.6} />
-        </RoundedBox>
-        {/* sun shield */}
-        <RoundedBox args={[0.42, 0.05, 0.84]} radius={0.02} smoothness={3} position={[0, 0.18, 0.04]}>
-          <meshPhysicalMaterial color="#f4f4f4" roughness={0.3} clearcoat={0.6} />
-        </RoundedBox>
-        {/* lens bezel + glass */}
-        <mesh position={[0, -0.01, 0.37]} rotation-x={Math.PI / 2}>
-          <cylinderGeometry args={[0.12, 0.12, 0.05, 48]} />
-          <meshStandardMaterial color="#111114" metalness={0.6} roughness={0.35} />
-        </mesh>
-        <mesh position={[0, -0.01, 0.39]} rotation-x={Math.PI / 2}>
-          <cylinderGeometry args={[0.085, 0.085, 0.03, 48]} />
-          <meshPhysicalMaterial color="#05060a" roughness={0.02} metalness={0.2} clearcoat={1} />
-        </mesh>
-        <mesh position={[0, -0.01, 0.398]}>
-          <torusGeometry args={[0.087, 0.008, 12, 48]} />
-          <meshStandardMaterial color="#ff4d1c" metalness={0.5} roughness={0.3} />
-        </mesh>
-        <mesh position={[0.12, -0.1, 0.362]}>
-          <sphereGeometry args={[0.018, 16, 16]} />
-          <meshStandardMaterial ref={led} color="#ff2a00" emissive="#ff2a00" emissiveIntensity={2} />
-        </mesh>
-      </group>
-      {/* bracket arm */}
-      <mesh position={[0, -0.2, -0.18]}>
-        <cylinderGeometry args={[0.025, 0.025, 0.16, 16]} />
-        <meshStandardMaterial color="#cfcfcf" metalness={0.9} roughness={0.25} />
-      </mesh>
-      <mesh position={[0, -0.28, -0.18]}>
-        <cylinderGeometry args={[0.09, 0.09, 0.025, 32]} />
-        <meshStandardMaterial color="#d8d8d8" metalness={0.9} roughness={0.25} />
-      </mesh>
-    </group>
-  )
-}
-
-// Face-detection brackets drawn over the portrait.
-function Detection({ size }) {
-  const ref = useRef()
-  const scan = useRef()
-  const w = size * 0.2
-  const h = size * 0.26
-  const l = Math.min(w, h) * 0.28
-  const t = size * 0.006
-  const corners = [
-    [-1, 1],
-    [1, 1],
-    [-1, -1],
-    [1, -1],
-  ]
-  useFrame((state) => {
-    const k = state.clock.elapsedTime
-    ref.current.scale.setScalar(1 + Math.sin(k * 2.2) * 0.025)
-    scan.current.position.y = ((k * 0.22) % 1) * -size + size / 2
-  })
-  return (
-    <group position={[0, 0, 0.02]}>
-      <group ref={ref} position={[-size * 0.01, size * 0.3, 0]}>
-        {corners.map(([sx, sy], i) => (
-          <group key={i} position={[(sx * w) / 2, (sy * h) / 2, 0]}>
-            <mesh position={[(-sx * l) / 2, 0, 0]}>
-              <planeGeometry args={[l, t]} />
-              <meshBasicMaterial color="#ff4d1c" toneMapped={false} />
-            </mesh>
-            <mesh position={[0, (-sy * l) / 2, 0]}>
-              <planeGeometry args={[t, l]} />
-              <meshBasicMaterial color="#ff4d1c" toneMapped={false} />
-            </mesh>
-          </group>
-        ))}
-        <Html position={[-w / 2, h / 2, 0]} zIndexRange={[1, 0]} className="det-tag-wrap">
-          <div className="det-tag">person · 0.98</div>
-        </Html>
-      </group>
-      <mesh ref={scan}>
-        <planeGeometry args={[size, size * 0.004]} />
-        <meshBasicMaterial color="#ff4d1c" transparent opacity={0.55} toneMapped={false} />
-      </mesh>
-    </group>
-  )
-}
-
-function Rig({ started, theme }) {
+function Rig({ started, theme, quality }) {
   const root = useRef()
   const orbit = useRef()
   const { viewport, pointer } = useThree()
@@ -187,6 +177,10 @@ function Rig({ started, theme }) {
   const baseY = mobile ? viewport.height * 0.12 : -0.05
 
   useFrame((state, dt) => {
+    const cam = state.camera
+    const sp = Math.min(window.scrollY / window.innerHeight, 1.5)
+    // Gentle dolly-in while the hero scrolls away (Quai-like depth, kept subtle).
+    cam.position.z = damp(cam.position.z, 6 - (quality.calm ? 0 : sp * 1.4), 4, dt)
     const g = root.current
     const o = orbit.current
     const p = Math.min(window.scrollY / window.innerHeight, 1.5)
@@ -201,22 +195,16 @@ function Rig({ started, theme }) {
   return (
     <group ref={root} position={[baseX, baseY, 0]} scale={0.55}>
       <Portrait size={size} />
-      <Detection size={size} />
 
       <group ref={orbit}>
-        <Ring radius={size * 0.78} speed={0.18} axis="z" />
-        <Ring radius={size * 0.9} speed={-0.12} axis="y" tube={0.005} />
+        <NeuralSphere radius={size * 0.95} count={quality.nodes} color={colors.accent} line={colors.line} calm={quality.calm} />
+        <ParticleRing radius={size * 1.25} count={quality.ring} color={colors.accent} calm={quality.calm} />
 
-        <Float speed={1.6} rotationIntensity={0.2} floatIntensity={0.6}>
-          <CCTV position={[-size * 0.68, size * 0.5, 0.6]} rotation={[0.25, 0.6, 0]} scale={size * 0.3} />
-        </Float>
-        <Float speed={1.3} rotationIntensity={0.2} floatIntensity={0.7}>
-          <CCTV position={[size * 0.62, -size * 0.28, 0.5]} rotation={[-0.1, -0.6, 0]} scale={size * 0.26} sweep={0.45} phase={2} />
-        </Float>
-
-        <Float speed={2} rotationIntensity={0.6} floatIntensity={0.8}>
-          <Glass position={[-size * 0.5, -size * 0.42, 0.8]} scale={size * 0.3} />
-        </Float>
+        {!quality.lite && (
+          <Float speed={2} rotationIntensity={0.6} floatIntensity={0.8}>
+            <Glass position={[-size * 0.5, -size * 0.42, 0.8]} scale={size * 0.3} />
+          </Float>
+        )}
 
         <Float speed={2.4} floatIntensity={1.2}>
           <mesh position={[size * 0.6, size * 0.5, 0.3]}>
@@ -232,7 +220,7 @@ function Rig({ started, theme }) {
         </Float>
       </group>
 
-      <Sparkles count={50} scale={[size * 2.4, size * 2, 1.5]} size={1.6} speed={0.25} opacity={0.5} color={colors.sparkle} />
+      <Sparkles count={quality.sparkles} scale={[size * 2.4, size * 2, 1.5]} size={1.6} speed={0.25} opacity={0.5} color={colors.sparkle} />
     </group>
   )
 }
@@ -262,6 +250,7 @@ function Studio({ theme }) {
 
 export default function HeroScene({ started, theme }) {
   const wrap = useRef()
+  const [quality] = useState(getQuality)
   const [visible, setVisible] = useState(true)
 
   // Stop rendering when the hero is off screen.
@@ -275,7 +264,7 @@ export default function HeroScene({ started, theme }) {
     <div ref={wrap} className="hero-canvas" aria-hidden="true">
       <Canvas
         frameloop={visible ? 'always' : 'never'}
-        dpr={[1, 1.75]}
+        dpr={quality.dpr}
         camera={{ position: [0, 0, 6], fov: 35 }}
         gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
         eventSource={document.getElementById('root')}
@@ -284,7 +273,7 @@ export default function HeroScene({ started, theme }) {
         <ambientLight intensity={0.4} />
         <directionalLight position={[3, 4, 5]} intensity={1.2} />
         <Suspense fallback={null}>
-          <Rig started={started} theme={theme} />
+          <Rig started={started} theme={theme} quality={quality} />
           <Studio theme={theme} />
           <Ready />
         </Suspense>

@@ -26,6 +26,16 @@ export default function Contact() {
   }
   return (
     <section className="section contact" id="contact">
+      <FadeUp className="cta-block">
+        <span className="cta-glow" aria-hidden="true" />
+        <p className="cta-big">
+          {t.contact.cta[0]} <span className="line-accent">{t.contact.cta[1]}</span>
+        </p>
+        <a className="btn-shine" href={socials[0].u} target="_blank" rel="noreferrer" data-cursor="">
+          <span>{t.contact.ctaBtn}</span>
+          <span className="btn-arrow">↗</span>
+        </a>
+      </FadeUp>
       <FadeUp className="kicker"><span className="dot" /> {t.contact.kicker}</FadeUp>
       <h2 className="contact-title">
         <SplitReveal text={t.contact.title[0]} className="line" />

@@ -99,6 +99,57 @@ function Featured() {
   )
 }
 
+// Keyvora-style horizontal gallery of the remaining projects with images.
+function Gallery({ onOpen }) {
+  const { t, lang } = useLang()
+  const track = useRef()
+  const [active, setActive] = useState(0)
+  const list = projects.filter((p) => !p.featured && p.image)
+  const onScroll = () => {
+    const el = track.current
+    const card = el.firstElementChild
+    if (!card) return
+    setActive(Math.round(el.scrollLeft / (card.offsetWidth + 18)))
+  }
+  const go = (i) => {
+    const el = track.current
+    const card = el.children[i]
+    if (card) el.scrollTo({ left: card.offsetLeft - el.firstElementChild.offsetLeft, behavior: 'smooth' })
+  }
+  if (!list.length) return null
+  return (
+    <div className="gallery">
+      <div className="sub-head gallery-head">
+        <span className="mono">↳ {t.work.gallery}</span>
+        <div className="gallery-nav">
+          <button onClick={() => go(Math.max(active - 1, 0))} aria-label="Prev">←</button>
+          <button onClick={() => go(Math.min(active + 1, list.length - 1))} aria-label="Next">→</button>
+        </div>
+      </div>
+      <div className="gallery-track" ref={track} onScroll={onScroll} data-lenis-prevent-wheel>
+        {list.map((p) => (
+          <button key={p.id} className="g-card" onClick={() => onOpen(p)} data-cursor={t.work.open}>
+            <span className="g-img">
+              <img src={resolveImg(p.image)} alt="" loading="lazy" />
+            </span>
+            <span className="g-meta">
+              <span className="chip">{t.work.cats[p.category]}</span>
+              <span className="mono">{p.year}</span>
+            </span>
+            <span className="g-title">{p.title}</span>
+            <span className="g-desc">{p.desc[lang].split(/[.:]/)[0]}</span>
+          </button>
+        ))}
+      </div>
+      <div className="g-dots" role="tablist">
+        {list.map((p, i) => (
+          <button key={p.id} className={i === active ? 'is-active' : ''} onClick={() => go(i)} aria-label={p.title} />
+        ))}
+      </div>
+    </div>
+  )
+}
+
 function Modal({ p, onClose }) {
   const { t, lang } = useLang()
   useEffect(() => {
@@ -148,11 +199,10 @@ function Modal({ p, onClose }) {
   )
 }
 
-function Index() {
+function Index({ setOpen }) {
   const { t, lang } = useLang()
   const [cat, setCat] = useState('all')
   const [hover, setHover] = useState(null)
-  const [open, setOpen] = useState(null)
   const x = useMotionValue(0)
   const y = useMotionValue(0)
   const sx = useSpring(x, { stiffness: 160, damping: 20 })
@@ -240,13 +290,13 @@ function Index() {
         </AnimatePresence>
       </motion.div>
 
-      <AnimatePresence>{open && <Modal p={open} onClose={() => setOpen(null)} />}</AnimatePresence>
     </div>
   )
 }
 
 export default function Projects() {
   const { t } = useLang()
+  const [open, setOpen] = useState(null)
   return (
     <section className="section work" id="work">
       <div className="section-head">
@@ -254,7 +304,9 @@ export default function Projects() {
         <SplitReveal as="h2" className="h2" text={t.work.title} />
       </div>
       <Featured />
-      <Index />
+      <Gallery onOpen={setOpen} />
+      <Index setOpen={setOpen} />
+      <AnimatePresence>{open && <Modal p={open} onClose={() => setOpen(null)} />}</AnimatePresence>
       <FadeUp className="work-more">
         <Magnetic>
           <a className="btn btn-ghost" href="https://github.com/khakimovallamurod?tab=repositories" target="_blank" rel="noreferrer">
